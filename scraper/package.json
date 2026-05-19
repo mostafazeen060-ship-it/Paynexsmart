@@ -1,0 +1,21 @@
+{
+  "name": "paynix-btech-scraper",
+  "version": "3.0.0",
+  "description": "BTech.com product scraper — axios + cheerio + residential proxy support",
+  "type": "module",
+  "scripts": {
+    "scrape":           "node btech-scraper.js",
+    "scrape:test":      "node btech-scraper.js --test",
+    "scrape:proxy":     "node btech-scraper.js --proxy $BTECH_PROXY",
+    "scrape:proxy:test":"node btech-scraper.js --proxy $BTECH_PROXY --test",
+    "scrape:mobiles":   "node btech-scraper.js --category mobiles",
+    "scrape:laptops":   "node btech-scraper.js --category laptops",
+    "scrape:tvs":       "node btech-scraper.js --category tvs-monitors",
+    "validate":         "node btech-scraper.js --validate"
+  },
+  "dependencies": {
+    "axios":             "^1.6.5",
+    "cheerio":           "^1.0.0",
+    "https-proxy-agent": "^7.0.4"
+  }
+}
