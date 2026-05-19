@@ -1,33 +1,54 @@
-[[
-  {"id": "j-1", "title": "سامسونج جالكسي A55 - 128 جيجا - 8 جيجا رام - أزرق", "price": 18499, "image": "https://eg.jumia.is/unsafe/fit-in/300x300/filters:fill(white)/product/26/567473/1.jpg", "category": "موبايلات", "link": "https://www.jumia.com.eg/ar/phones-tablets/"},
-  {"id": "j-2", "title": "سامسونج جالكسي A55 - 256 جيجا - 8 جيجا رام - أسود", "price": 20200, "image": "https://eg.jumia.is/unsafe/fit-in/300x300/filters:fill(white)/product/26/567473/1.jpg", "category": "موبايلات", "link": "https://www.jumia.com.eg/ar/phones-tablets/"},
-  {"id": "j-3", "title": "آيفون 15 برو - 256 جيجا - تيتانيوم طبيعي", "price": 45999, "image": "https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone-15-pro-finish-select-202309-6-7inch-naturaltitanium?wid=300", "category": "موبايلات", "link": "https://www.jumia.com.eg/ar/phones-tablets/"},
-  {"id": "j-4", "title": "آيفون 15 برو ماكس - 512 جيجا - تيتانيوم أسود", "price": 58500, "image": "https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone-15-pro-finish-select-202309-6-7inch-blacktitanium?wid=300", "category": "موبايلات", "link": "https://www.jumia.com.eg/ar/phones-tablets/"},
-  {"id": "j-5", "title": "شاومي ريدمي 15C - 128 جيجا - 6 جيجا رام - أزرق", "price": 7769, "image": "https://eg.jumia.is/unsafe/fit-in/300x300/filters:fill(white)/product/14/987473/1.jpg", "category": "موبايلات", "link": "https://www.jumia.com.eg/ar/phones-tablets/"},
-  {"id": "j-6", "title": "شاومي ريدمي 15C - 256 جيجا - 8 جيجا رام - أخضر", "price": 8900, "image": "https://eg.jumia.is/unsafe/fit-in/300x300/filters:fill(white)/product/14/987473/1.jpg", "category": "موبايلات", "link": "https://www.jumia.com.eg/ar/phones-tablets/"},
-  {"id": "j-7", "title": "انفينكس هوت 60i - 128 جيجا - 6 جيجا رام - أسود", "price": 7169, "image": "https://eg.jumia.is/unsafe/fit-in/300x300/filters:fill(white)/product/53/123473/1.jpg", "category": "موبايلات", "link": "https://www.jumia.com.eg/ar/phones-tablets/"},
-  {"id": "j-8", "title": "انفينكس هوت 60i - 256 جيجا - 8 جيجا رام - ذهبي", "price": 8100, "image": "https://eg.jumia.is/unsafe/fit-in/300x300/filters:fill(white)/product/53/123473/1.jpg", "category": "موبايلات", "link": "https://www.jumia.com.eg/ar/phones-tablets/"},
-  {"id": "j-9", "title": "تابلت هونر Pad X9a مقاس 11.5 بوصة - 128 جيجا - رمادي", "price": 11659, "image": "https://eg.jumia.is/unsafe/fit-in/300x300/filters:fill(white)/product/88/456473/1.jpg", "category": "تابلت", "link": "https://www.jumia.com.eg/ar/phones-tablets/"},
-  {"id": "j-10", "title": "أبل آيباد إير 11 بوصة M2 واي فاي - 128 جيجا - فضي", "price": 31913, "image": "https://eg.jumia.is/unsafe/fit-in/300x300/filters:fill(white)/product/02/789473/1.jpg", "category": "تابلت", "link": "https://www.jumia.com.eg/ar/phones-tablets/"},
-  {"id": "j-11", "title": "سامسونج جالكسي A15 - 128 جيجا - 4 جيجا رام - أزرق غامق", "price": 7300, "image": "https://eg.jumia.is/unsafe/fit-in/300x300/filters:fill(white)/product/26/567473/1.jpg", "category": "موبايلات", "link": "https://www.jumia.com.eg/ar/phones-tablets/"},
-  {"id": "j-12", "title": "سامسونج جالكسي A15 - 256 جيجا - 8 جيجا رام - فضي", "price": 8950, "image": "https://eg.jumia.is/unsafe/fit-in/300x300/filters:fill(white)/product/26/567473/1.jpg", "category": "موبايلات", "link": "https://www.jumia.com.eg/ar/phones-tablets/"},
-  {"id": "j-13", "title": "ريلمي C67 شريحتين - 256 جيجا - 8 جيجا رام - أخضر", "price": 9450, "image": "https://eg.jumia.is/unsafe/fit-in/300x300/filters:fill(white)/product/14/987473/1.jpg", "category": "موبايلات", "link": "https://www.jumia.com.eg/ar/phones-tablets/"},
-  {"id": "j-14", "title": "ريلمي C55 شريحتين - 256 جيجا - 8 جيجا رام - ذهبي", "price": 8300, "image": "https://eg.jumia.is/unsafe/fit-in/300x300/filters:fill(white)/product/14/987473/1.jpg", "category": "موبايلات", "link": "https://www.jumia.com.eg/ar/phones-tablets/"},
-  {"id": "j-15", "title": "شاومي ريدمي 13 - 128 جيجا - 6 جيجا رام - أسود", "price": 7200, "image": "https://eg.jumia.is/unsafe/fit-in/300x300/filters:fill(white)/product/99/654473/1.jpg", "category": "موبايلات", "link": "https://www.jumia.com.eg/ar/phones-tablets/"},
-  {"id": "j-16", "title": "شاومي ريدمي 13 - 256 جيجا - 8 جيجا رام - أزرق", "price": 8400, "image": "https://eg.jumia.is/unsafe/fit-in/300x300/filters:fill(white)/product/99/654473/1.jpg", "category": "موبايلات", "link": "https://www.jumia.com.eg/ar/phones-tablets/"},
-  {"id": "j-17", "title": "تابلت شاومي بادمـي SE مقاس 11 بوصة - 128 جيجا - رمادي", "price": 9200, "image": "https://eg.jumia.is/unsafe/fit-in/300x300/filters:fill(white)/product/88/456473/1.jpg", "category": "تابلت", "link": "https://www.jumia.com.eg/ar/phones-tablets/"},
-  {"id": "j-18", "title": "سامسونج جالكسي S24 أولترا - 256 جيجا - 12 رام - تيتانيوم رمادي", "price": 52000, "image": "https://eg.jumia.is/unsafe/fit-in/300x300/filters:fill(white)/product/26/567473/1.jpg", "category": "موبايلات", "link": "https://www.jumia.com.eg/ar/phones-tablets/"},
-  {"id": "j-19", "title": "سامسونج جالكسي S24 أولترا - 512 جيجا - 12 رام - تيتانيوم أسود", "price": 59000, "image": "https://eg.jumia.is/unsafe/fit-in/300x300/filters:fill(white)/product/26/567473/1.jpg", "category": "موبايلات", "link": "https://www.jumia.com.eg/ar/phones-tablets/"},
-  {"id": "j-20", "title": "آيفون 14 - 128 جيجا - أزرق", "price": 33500, "image": "https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone-14-finish-select-202209-6-1inch-blue?wid=300", "category": "موبايلات", "link": "https://www.jumia.com.eg/ar/phones-tablets/"},
-  {"id": "j-21", "title": "آيفون 14 برو - 256 جيجا - بنفسجي عميق", "price": 41000, "image": "https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone-14-pro-finish-select-202209-6-7inch-deeppurple?wid=300", "category": "موبايلات", "link": "https://www.jumia.com.eg/ar/phones-tablets/"},
-  {"id": "j-22", "title": "سامسونج جالكسي A35 - 128 جيجا - 8 جيجا رام - كحلي", "price": 14200, "image": "https://eg.jumia.is/unsafe/fit-in/300x300/filters:fill(white)/product/26/567473/1.jpg", "category": "موبايلات", "link": "https://www.jumia.com.eg/ar/phones-tablets/"},
-  {"id": "j-23", "title": "سامسونج جالكسي A35 - 256 جيجا - 8 جيجا رام - أبيض", "price": 15800, "image": "https://eg.jumia.is/unsafe/fit-in/300x300/filters:fill(white)/product/26/567473/1.jpg", "category": "موبايلات", "link": "https://www.jumia.com.eg/ar/phones-tablets/"},
-  {"id": "j-24", "title": "ريلمي 12 برو شريحتين - 256 جيجا - 12 جيجا رام - أزرق", "price": 16500, "image": "https://eg.jumia.is/unsafe/fit-in/300x300/filters:fill(white)/product/14/987473/1.jpg", "category": "موبايلات", "link": "https://www.jumia.com.eg/ar/phones-tablets/"},
-  {"id": "j-25", "title": "أوبو Reno 11F شريحتين - 256 جيجا - 8 جيجا رام - أخضر", "price": 13900, "image": "https://eg.jumia.is/unsafe/fit-in/300x300/filters:fill(white)/product/14/987473/1.jpg", "category": "موبايلات", "link": "https://www.jumia.com.eg/ar/phones-tablets/"},
-  {"id": "j-26", "title": "أوبو A78 شريحتين - 256 جيجا - 8 جيجا رام - أسود", "price": 9600, "image": "https://eg.jumia.is/unsafe/fit-in/300x300/filters:fill(white)/product/14/987473/1.jpg", "category": "موبايلات", "link": "https://www.jumia.com.eg/ar/phones-tablets/"},
-  {"id": "j-27", "title": "انفينكس سمارت 8 شريحتين - 64 جيجا - 4 جيجا رام - أخضر", "price": 4900, "image": "https://eg.jumia.is/unsafe/fit-in/300x300/filters:fill(white)/product/53/123473/1.jpg", "category": "موبايلات", "link": "https://www.jumia.com.eg/ar/phones-tablets/"},
-  {"id": "j-28", "title": "انفينكس سمارت 8 شريحتين - 128 جيجا - 4 جيجا رام - أسود", "price": 5400, "image": "https://eg.jumia.is/unsafe/fit-in/300x300/filters:fill(white)/product/53/123473/1.jpg", "category": "موبايلات", "link": "https://www.jumia.com.eg/ar/phones-tablets/"},
-  {"id": "j-29", "title": "تابلت سامسونج جالكسي Tab A9 مقاس 8.7 بوصة - 64 جيجا - فضي", "price": 7800, "image": "https://eg.jumia.is/unsafe/fit-in/300x300/filters:fill(white)/product/88/456473/1.jpg", "category": "تابلت", "link": "https://www.jumia.com.eg/ar/phones-tablets/"},
-  {"id": "j-30", "title": "أبل آيباد 10 مقاس 10.9 بوصة واي فاي - 64 جيجا - أزرق", "price": 22500, "image": "https://eg.jumia.is/unsafe/fit-in/300x300/filters:fill(white)/product/02/789473/1.jpg", "category": "تابلت", "link": "https://www.jumia.com.eg/ar/phones-tablets/"}
-]
+[
+  {
+    "id": "paynex-api-1",
+    "title": "iPhone 14 Pro Max - 256GB",
+    "price": 49950,
+    "oldPrice": 55000,
+    "description": "شاشة Super Retina XDR مقاس 6.7 بوصة ميزة تشغيل دائم، كاميرا رئيسية بدقة 48 ميجابكسل، وشريحة A16 Bionic خارقة الذكاء.",
+    "images": [
+      "https://images.unsplash.com/photo-1678652197831-2d180705cd2c?w=500"
+    ],
+    "store": "Apple Store",
+    "url": "https://dummyjson.com/products/1",
+    "scrapedAt": "2026-05-19T10:33:00Z"
+  },
+  {
+    "id": "paynex-api-2",
+    "title": "Samsung Galaxy S23 Ultra",
+    "price": 44990,
+    "oldPrice": 49000,
+    "description": "قلم S Pen مدمج، كاميرا بدقة 200 ميجابكسل للتصوير الليلي الاحترافي، ومعالج Snapdragon 8 Gen 2 لأقوى أداء ألعاب.",
+    "images": [
+      "https://images.unsplash.com/photo-1610945265064-0e34e5519bbf?w=500"
+    ],
+    "store": "Samsung Global",
+    "url": "https://dummyjson.com/products/2",
+    "scrapedAt": "2026-05-19T10:33:00Z"
+  },
+  {
+    "id": "paynex-api-3",
+    "title": "Xiaomi Redmi Note 12 Pro",
+    "price": 14500,
+    "oldPrice": 16000,
+    "description": "شاشة أموليد 120 هرتز، شحن سريع بقوة 67 واط، وكاميرا ثلاثية بدقة 50 ميجابكسل مع مثبت بصري ذكي.",
+    "images": [
+      "https://images.unsplash.com/photo-1598327105666-5b89351aff97?w=500"
+    ],
+    "store": "Xiaomi Store",
+    "url": "https://dummyjson.com/products/3",
+    "scrapedAt": "2026-05-19T10:33:00Z"
+  },
+  {
+    "id": "paynex-api-4",
+    "title": "Realme GT Neo 5",
+    "price": 19200,
+    "oldPrice": 19200,
+    "description": "شاحن خارق بقوة 150 واط يشحن الهاتف في 15 دقيقة، ذاكرة عشوائية 16 جيجا رام، وتصميم خلفي بإضاءة RGB تفاعلية.",
+    "images": [
+      "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=500"
+    ],
+    "store": "Realme",
+    "url": "https://dummyjson.com/products/4",
+    "scrapedAt": "2026-05-19T10:33:00Z"
+  }
 ]
