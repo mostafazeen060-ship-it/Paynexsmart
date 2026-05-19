@@ -1,0 +1,123 @@
+[
+  {
+    "id": 1,
+    "title": "Samsung Galaxy S24 Ultra",
+    "category": "الموبايلات والتابلت",
+    "categoryId": "mobiles",
+    "brand": "Samsung",
+    "price": 52000,
+    "currency": "ج.م",
+    "image": "https://picsum.photos/id/1/300/200",
+    "installment": { "allow": true, "downPayment": 5200, "m24": 2450, "m36": 1800 }
+  },
+  {
+    "id": 2,
+    "title": "شاشة LG OLED 55 بوصة Smart 4K",
+    "category": "الشاشات والإلكترونيات",
+    "categoryId": "tv",
+    "brand": "LG",
+    "price": 38000,
+    "currency": "ج.م",
+    "image": "https://picsum.photos/id/2/300/200",
+    "installment": { "allow": true, "downPayment": 3800, "m24": 1800, "m36": 1300 }
+  },
+  {
+    "id": 3,
+    "title": "Dell Inspiron 15 Core i7",
+    "category": "الكمبيوتر واللاب توب",
+    "categoryId": "laptops",
+    "brand": "Dell",
+    "price": 34000,
+    "currency": "ج.م",
+    "image": "https://picsum.photos/id/3/300/200",
+    "installment": { "allow": true, "downPayment": 3400, "m24": 1600, "m36": 1150 }
+  },
+  {
+    "id": 4,
+    "title": "ثلاجة شارب إنفرتر 450 لتر",
+    "category": "الثلاجات والديب فريزر",
+    "categoryId": "refrigerators",
+    "brand": "Sharp",
+    "price": 28000,
+    "currency": "ج.م",
+    "image": "https://picsum.photos/id/4/300/200",
+    "installment": { "allow": true, "downPayment": 2800, "m24": 1320, "m36": 950 }
+  },
+  {
+    "id": 5,
+    "title": "غسالة زانوسي اتوماتيك 7 كيلو",
+    "category": "الغسالات والمجففات",
+    "categoryId": "washers",
+    "brand": "Zanussi",
+    "price": 16500,
+    "currency": "ج.م",
+    "image": "https://picsum.photos/id/5/300/200",
+    "installment": { "allow": true, "downPayment": 1650, "m24": 780, "m36": 560 }
+  },
+  {
+    "id": 6,
+    "title": "تكييف كاريير اوبتيماكس 1.5 حصان",
+    "category": "التكييفات",
+    "categoryId": "air-conditioners",
+    "brand": "Carrier",
+    "price": 22500,
+    "currency": "ج.م",
+    "image": "https://picsum.photos/id/6/300/200",
+    "installment": { "allow": true, "downPayment": 2250, "m24": 1060, "m36": 760 }
+  },
+  {
+    "id": 7,
+    "title": "خلاط مولينكس فرنسي بالمطحنة",
+    "category": "أجهزة المطبخ الصغيرة",
+    "categoryId": "kitchen",
+    "brand": "Moulinex",
+    "price": 2400,
+    "currency": "ج.م",
+    "image": "https://picsum.photos/id/7/300/200",
+    "installment": { "allow": true, "downPayment": 240, "m24": 115, "m36": 85 }
+  },
+  {
+    "id": 8,
+    "title": "ماكينة حلاقة براون سيرياس 3",
+    "category": "العناية الشخصية",
+    "categoryId": "personal-care",
+    "brand": "Braun",
+    "price": 1800,
+    "currency": "ج.م",
+    "image": "https://picsum.photos/id/8/300/200",
+    "installment": { "allow": false, "downPayment": 1800, "m24": 0, "m36": 0 }
+  },
+  {
+    "id": 9,
+    "title": "مكنسة تورنيدو برميلية 1600 وات",
+    "category": "المكنسة والمكواة والدفايات",
+    "categoryId": "home-appliances",
+    "brand": "Tornado",
+    "price": 4200,
+    "currency": "ج.م",
+    "image": "https://picsum.photos/id/9/300/200",
+    "installment": { "allow": true, "downPayment": 420, "m24": 200, "m36": 145 }
+  },
+  {
+    "id": 10,
+    "title": "PlayStation 5 Slim 1TB",
+    "category": "الألعاب والـ Gaming",
+    "categoryId": "gaming",
+    "brand": "Sony",
+    "price": 27500,
+    "currency": "ج.م",
+    "image": "https://picsum.photos/id/10/300/200",
+    "installment": { "allow": true, "downPayment": 2750, "m24": 1300, "m36": 930 }
+  },
+  {
+    "id": 11,
+    "title": "ساعة ذكية Oraimo Watch 4 Plus",
+    "category": "الإكسسوارات والساعات الذكية",
+    "categoryId": "accessories",
+    "brand": "Oraimo",
+    "price": 2100,
+    "currency": "ج.م",
+    "image": "https://picsum.photos/id/11/300/200",
+    "installment": { "allow": true, "downPayment": 210, "m24": 100, "m36": 72 }
+  }
+]
