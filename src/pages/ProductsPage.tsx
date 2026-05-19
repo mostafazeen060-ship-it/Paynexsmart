@@ -18,19 +18,10 @@ function ProductsPage() {
     fetchProducts();
   }, []);
 
-  return (
-    <div className="products-container">
-      <h1>منتجاتنا</h1>
-      <div className="grid">
-        {products.map((product) => (
-          <div key={product.id} className="product-card">
-            <h3>{product.name}</h3>
-            <p>السعر: {product.price} ج.م</p>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-export default ProductsPage;
+  {products.map((product) => (
+  <div key={product.id} className="product-card">
+    {/* تأكد إن name و price هما نفس أسماء الأعمدة في Supabase */}
+    <h3>{product.name || "منتج بدون اسم"}</h3> 
+    <p>السعر: {product.price ? `${product.price} ج.م` : "السعر غير متاح"}</p>
+  </div>
+))}
