@@ -1,7 +1,37 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 
-// 1. تعريف الأقسام الـ 11 الأساسية لشغل B.TECH
-const CATEGORIES = [
+// 1. تعريف واجهات البيانات (Interfaces) الخاصة بـ TypeScript
+interface CategoryConfig {
+  id: string;
+  name: string;
+  brands: string[];
+  basePrice: number;
+}
+
+interface InstallmentOptions {
+  allow: boolean;
+  downPayment: number;
+  m24: number;
+  m36: number;
+}
+
+interface Product {
+  id: number;
+  productIndex: number;
+  title: string;
+  category: string;
+  categoryId: string;
+  brand: string;
+  price: number;
+  currency: string;
+  stock: number;
+  image: string;
+  description: string;
+  installment: InstallmentOptions;
+}
+
+// 2. تعريف الأقسام الـ 11 الأساسية لشغل B.TECH مع تحديد النوع
+const CATEGORIES: CategoryConfig[] = [
   { id: 'mobiles', name: 'الموبايلات والتابلت', brands: ['Samsung', 'Apple', 'Oppo', 'Xiaomi', 'Realme'], basePrice: 9000 },
   { id: 'tv', name: 'الشاشات والإلكترونيات', brands: ['LG', 'Samsung', 'Toshiba', 'Sony', 'Sharp'], basePrice: 16000 },
   { id: 'laptops', name: 'الكمبيوتر واللاب توب', brands: ['Dell', 'HP', 'Lenovo', 'Asus', 'Apple'], basePrice: 30000 },
@@ -15,32 +45,29 @@ const CATEGORIES = [
   { id: 'accessories', name: 'الإكسسوارات والساعات الذكية', brands: ['Oraimo', 'Anker', 'Apple', 'Samsung', 'Xiaomi'], basePrice: 2500 }
 ];
 
-// 2. دالة توليد 2,000 منتج لكل قسم من الأقسام الـ 11 (إجمالي 22,000 منتج)
-const generatePerfectCatalog = () => {
-  const products = [];
+// 3. دالة توليد 2,000 منتج لكل قسم (إجمالي 22,000 منتج) مدعومة بـ Type Safety
+const generatePerfectCatalog = (): Product[] => {
+  const products: Product[] = [];
   let globalId = 1;
-  const itemsPerCategory = 2000; // 2000 منتج لكل قسم
+  const itemsPerCategory = 2000; 
 
   CATEGORIES.forEach((category) => {
     for (let i = 1; i <= itemsPerCategory; i++) {
       const brand = category.brands[i % category.brands.length];
       
-      // معامل تغير السعر لتوليد أسعار متنوعة ومنطقية لكل منتج في نفس القسم
       const priceModifier = 0.6 + ((i * 7) % 150) * 0.02; 
-      const price = Math.round((category.basePrice * priceModifier) / 50) * 50; // تقريب لأقرب 50 جنيه
+      const price = Math.round((category.basePrice * priceModifier) / 50) * 50; 
       
-      // منطق حسابات الأقساط لـ PayNix
       const allowInstallment = price > 2000; 
-      const minDownPayment = allowInstallment ? Math.round((price * 0.1) / 10) * 10 : price; // مقدم 10%
+      const minDownPayment = allowInstallment ? Math.round((price * 0.1) / 10) * 10 : price; 
       const remainingAmount = price - minDownPayment;
       
-      // فوائد افتراضية للتقسيط (24 شهر و 36 شهر)
       const m24 = allowInstallment ? Math.round((remainingAmount * 1.35) / 24) : 0; 
       const m36 = allowInstallment ? Math.round((remainingAmount * 1.50) / 36) : 0;
 
       products.push({
         id: globalId,
-        productIndex: i, // ترتيب المنتج داخل قسمه الخاص
+        productIndex: i,
         title: `${category.name.slice(0, -1)} ${brand} - موديل رقم ${i}`,
         category: category.name,
         categoryId: category.id,
@@ -48,7 +75,7 @@ const generatePerfectCatalog = () => {
         price: price,
         currency: "ج.م",
         stock: (i % 20) + 1,
-        image: `https://picsum.photos/id/${(globalId % 100) + 1}/300/200`, // صور متغيرة سريعة التحميل
+        image: `https://picsum.photos/id/${(globalId % 100) + 1}/300/200`, 
         description: `منتج أصلي ومميز من ماركة ${brand} مدرج تحت فئة ${category.name}. متوافق تماماً مع حاسبة التمويل الاستهلاكي الفوري لمنصة PayNix.`,
         installment: {
           allow: allowInstallment,
@@ -64,28 +91,27 @@ const generatePerfectCatalog = () => {
   return products;
 };
 
-// تشغيل التوليد في الخلفية مرة واحدة
 const ALL_PRODUCTS = generatePerfectCatalog();
 
 export default function PayNixCatalog() {
-  const [selectedCategory, setSelectedCategory] = useState('all');
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 24; // عرض 24 منتج في الشبكة ليكون التوزيع متناسقاً (4 في كل صف)
+  const [selectedCategory, setSelectedCategory] = useState<string>('all');
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const itemsPerPage = 24; 
 
-  // تصفية المنتجات بناءً على القسم المختار
+  // تصفية المنتجات بناءً على القسم
   const filteredProducts = selectedCategory === 'all' 
     ? ALL_PRODUCTS 
     : ALL_PRODUCTS.filter(p => p.categoryId === selectedCategory);
 
-  // حسابات الـ Pagination لتجنب حمل المتصفح
+  // حسابات الـ Pagination
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentProducts = filteredProducts.slice(indexOfFirstItem, indexOfLastItem);
   const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
 
-  const handleCategoryChange = (catId) => {
+  const handleCategoryChange = (catId: string) => {
     setSelectedCategory(catId);
-    setCurrentPage(1); // العودة للصفحة الأولى دائماً عند تبديل الأقسام
+    setCurrentPage(1); 
   };
 
   return (
@@ -103,10 +129,10 @@ export default function PayNixCatalog() {
       </div>
 
       {/* شريط الأقسام الـ 11 المميز */}
-      <div style={{ display: 'flex', gap: '10px', overflowX: 'auto', paddingBottom: '12px', marginBottom: '25px', WebkitOverflowScrolling: 'touch' }}>
+      <div style={{ display: 'flex', gap: '10px', overflowX: 'auto', paddingBottom: '12px', marginBottom: '25px' }}>
         <button 
           onClick={() => handleCategoryChange('all')}
-          style={{ padding: '10px 18px', borderRadius: '8px', border: 'none', background: selectedCategory === 'all' ? '#0f172a' : '#fff', color: selectedCategory === 'all' ? '#fff' : '#334155', cursor: 'pointer', fontWeight: 'bold', boxShadow: '0 1px 3px rgba(0,0,0,0.1)', transition: '0.2s' }}
+          style={{ padding: '10px 18px', borderRadius: '8px', border: 'none', background: selectedCategory === 'all' ? '#0f172a' : '#fff', color: selectedCategory === 'all' ? '#fff' : '#334155', cursor: 'pointer', fontWeight: 'bold', boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}
         >
           كل المعروض ({ALL_PRODUCTS.length.toLocaleString()})
         </button>
@@ -121,7 +147,7 @@ export default function PayNixCatalog() {
         ))}
       </div>
 
-      {/* شبكة عرض المنتجات الـ 24 في الصفحة */}
+      {/* شبكة عرض المنتجات */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))', gap: '20px' }}>
         {currentProducts.map(product => (
           <div key={product.id} style={{ backgroundColor: '#fff', borderRadius: '12px', padding: '15px', boxShadow: '0 2px 4px rgba(0,0,0,0.02)', border: '1px solid #e2e8f0', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
@@ -155,7 +181,7 @@ export default function PayNixCatalog() {
         ))}
       </div>
 
-      {/* أدوات التحكم بالصفحات للـ 22 ألف منتج */}
+      {/* أدوات التحكم بالصفحات */}
       <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '15px', marginTop: '35px', paddingBottom: '20px' }}>
         <button 
           onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
@@ -176,5 +202,4 @@ export default function PayNixCatalog() {
 
     </div>
   );
-   }
-
+}
