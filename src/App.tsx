@@ -68,7 +68,8 @@ const generatePayNexProducts = (): Product[] => {
   return productsList;
 };
 
-export default function Dashboard() {
+export default function App()
+  () {
   // توليد المنتجات وحفظها في الـ State مباشرة
   const [products] = useState<Product[]>(generatePayNexProducts());
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
