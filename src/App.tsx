@@ -68,8 +68,8 @@ const generatePayNexProducts = (): Product[] => {
   return productsList;
 };
 
-export default function App()
-  () {
+// تم تعديل السطر بالكامل ليصبح App() بشكل سليم وبدون تكرار أقواس
+export default function App() {
   // توليد المنتجات وحفظها في الـ State مباشرة
   const [products] = useState<Product[]>(generatePayNexProducts());
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
@@ -171,4 +171,5 @@ export default function App()
 
     </div>
   );
-}
+      }
+      
