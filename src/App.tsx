@@ -1,151 +1,20 @@
-import TestConnection from './TestConnection';
+import { useEffect } from 'react';
+import { supabase } from './supabaseClient';
 
 function App() {
-  return (
-    <div className="App">
-      <TestConnection />
-    </div>
-  );
+  useEffect(() => {
+    async function testDb() {
+      const { data, error } = await supabase.from('profiles').select('*').limit(1);
+      if (error) console.error("خطأ في الاتصال:", error);
+      else console.log("✅ الاتصال نجح! البيانات:", data);
+    }
+    testDb();
+  }, []);
+
+  return <div>شوف الـ Console في المتصفح عشان تتأكد من الاتصال!</div>;
 }
 
 export default App;
-
-
-
-import React, { useState } from 'react';
-
-// تعريف مواصفات المنتج الثابتة والأقساط
-interface Product {
-  id: number;
-  title: string;
-  category: string;
-  categoryId: string;
-  brand: string;
-  price: number;
-  currency: string;
-  stock: number;
-  image: string;
-  description: string;
-  installment: {
-    allow: boolean;
-    downPayment: number;
-    m24: number;
-  };
-}
-
-// مصفوفة المنتجات الحقيقية (البديل النظيف للدالة العشوائية القديمة)
-const PAYNEX_REAL_PRODUCTS: Product[] = [
-  {
-    id: 1,
-    title: "iPhone 15 Pro Max - 256GB - تيتانيوم طبيعي أصلي",
-    category: "الموبايلات والتابلت",
-    categoryId: "mobiles",
-    brand: "Apple",
-    price: 65000,
-    currency: "ج.م",
-    stock: 5,
-    image: "https://images.unsplash.com/photo-1695048133142-1a20484d2569?w=400&auto=format&fit=crop&q=80",
-    description: "نسخة الشرق الأوسط بضمان معتمد، متاح تقسيط مباشر برقم البطاقة.",
-    installment: { allow: true, downPayment: 6500, m24: 3450 }
-  },
-  {
-    id: 2,
-    title: "شاشة سامسونج 55 بوصة Smart UHD 4K رسيفر مدمج",
-    category: "الشاشات والإلكترونيات",
-    categoryId: "tv",
-    brand: "Samsung",
-    price: 18500,
-    currency: "ج.م",
-    stock: 8,
-    image: "https://images.unsplash.com/photo-1593305841991-05c297ba4575?w=400&auto=format&fit=crop&q=80",
-    description: "ألوان سينمائية فائقة الوضوح مع دعم كامل لتطبيقات المشاهدة الذكية.",
-    installment: { allow: true, downPayment: 1850, m24: 980 }
-  },
-  {
-    id: 3,
-    title: "لابتوب ديل اير ون Dell Latitude برو معالج Core i7",
-    category: "الكمبيوتر واللاب توب",
-    categoryId: "laptops",
-    brand: "Dell",
-    price: 32000,
-    currency: "ج.م",
-    stock: 3,
-    image: "https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?w=400&auto=format&fit=crop&q=80",
-    description: "لأعمال البرمجة والجرافيك الشاقة، هارد سريع ورامات قوية.",
-    installment: { allow: true, downPayment: 3200, m24: 1700 }
-  },
-  {
-    id: 4,
-    title: "ثلاجة شارب ديجيتال 450 لتر إنفيرتر موفرة للطاقة",
-    category: "الثلاجات والديب فريزر",
-    categoryId: "refrigerators",
-    brand: "Sharp",
-    price: 28500,
-    currency: "ج.م",
-    stock: 4,
-    image: "https://images.unsplash.com/photo-1584622650111-993a426fbf0a?w=400&auto=format&fit=crop&q=80",
-    description: "نظام تبريد متطور لمنع تكون الثلج مع الحفاظ على نضارة المأكولات.",
-    installment: { allow: true, downPayment: 2850, m24: 1510 }
-  },
-  {
-    id: 5,
-    title: "غسالة ملابس ال جي اتوماتيك كامل 8 كيلو ديجيتال",
-    category: "الغسالات والمجففات",
-    categoryId: "washers",
-    brand: "LG",
-    price: 21000,
-    currency: "ج.م",
-    stock: 6,
-    image: "https://images.unsplash.com/photo-1626806787461-102c1bfaaea1?w=400&auto=format&fit=crop&q=80",
-    description: "محرك دفع مباشر ذكي، هادئة تماماً وموفرة في استهلاك المياه.",
-    installment: { allow: true, downPayment: 2100, m24: 1120 }
-  },
-  {
-    id: 6,
-    title: "تكييف كاريير اوبتي ماكس 1.5 حصان بارد ساخن بلازما",
-    category: "التكييفات",
-    categoryId: "air-conditioners",
-    brand: "Carrier",
-    price: 23500,
-    currency: "ج.م",
-    stock: 9,
-    image: "https://images.unsplash.com/photo-1621905251189-08b45d6a269e?w=400&auto=format&fit=crop&q=80",
-    description: "تبريد سريع جداً يغطي المساحات بكفاءة مع فلاتر تنقية الهواء.",
-    installment: { allow: true, downPayment: 2350, m24: 1250 }
-  }
-];
-
-export default function App() {
-  const [products] = useState<Product[]>(PAYNEX_REAL_PRODUCTS);
-  const [selectedCategory, setSelectedCategory] = useState<string>('all');
-  const [searchQuery, setSearchQuery] = useState<string>('');
-  const [currentPage, setCurrentPage] = useState<number>(1);
-  const itemsPerPage = 4; // عرض متوازن ومثالي لشاشات الموبايل
-
-  // الـ States الخاصة بحاسبة الأقساط بروح وتصميم جوميا الأنيق
-  const [calcPrice, setCalcPrice] = useState<number>(15000);
-  const [calcMonths, setCalcMonths] = useState<number>(24);
-  const calcDownPayment = Math.round(calcPrice * 0.1);
-  const calcMonthlyInstallment = Math.round(((calcPrice - calcDownPayment) * (1 + (calcMonths * 0.015))) / calcMonths);
-
-  const filteredProducts = products.filter(p => {
-    const matchesCategory = selectedCategory === 'all' || p.categoryId === selectedCategory;
-    const matchesSearch = p.title.toLowerCase().includes(searchQuery.toLowerCase()) || p.brand.toLowerCase().includes(searchQuery.toLowerCase());
-    return matchesCategory && matchesSearch;
-  });
-
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentProducts = filteredProducts.slice(indexOfFirstItem, indexOfLastItem);
-  const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
-
-  return (
-    <div style={{ fontFamily: 'Segoe UI, Roboto, sans-serif', direction: 'rtl', backgroundColor: '#f1f1f2', minHeight: '100vh', margin: 0, padding: 0 }}>
-      
-      {/* التوب بار العلوي لإعلانات العروض المباشرة */}
-      <div style={{ background: '#f68b1e', color: '#fff', fontSize: '11px', textAlign: 'center', padding: '6px 0', fontWeight: 'bold' }}>
-        قسّط جميع مشترياتك أونلاين برقم البطاقة وبأسرع موافقة تمويلية في مصر!
-      </div>
 
       {/* الهيدر المحسن: لوجو مستقل لـ PayNex وزر تسجيل الدخول */}
       <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px 16px', background: '#fff', position: 'sticky', top: 0, zIndex: 100, boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }}>
