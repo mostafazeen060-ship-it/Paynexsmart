@@ -6,12 +6,11 @@ interface Product {
   id: string;
   name: string;
   price: number;
-  image?: string;       // ضفنا صورة
-  description?: string; // ضفنا وصف
-  category?: string;    // ضفنا تصنيف
+  image?: string | null;       // إضافة null
+  description?: string | null; // إضافة null
+  category?: string | null;    // إضافة null
 }
 
-}
 
 export default function ProductsPage() {
   const [products, setProducts] = useState<Product[]>([]);
