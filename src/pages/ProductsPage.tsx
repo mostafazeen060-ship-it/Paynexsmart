@@ -6,7 +6,11 @@ interface Product {
   id: string;
   name: string;
   price: number;
-  image_url?: string; // عمود رابط الصورة في Supabase
+  image?: string;       // ضفنا صورة
+  description?: string; // ضفنا وصف
+  category?: string;    // ضفنا تصنيف
+}
+
 }
 
 export default function ProductsPage() {
@@ -15,13 +19,17 @@ export default function ProductsPage() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+     const { data, error } = await supabase.from('products').select('*');
+console.log("البيانات القادمة من السيرفر:", data);
+
     async function fetchProducts() {
       try {
         setLoading(true);
         // سحب البيانات من جدول products
         const { data, error: supabaseError } = await supabase
           .from('products')
-          .select('id, name, price, image_url');
+          .select('*')
+
 
         if (supabaseError) throw supabaseError;
 
