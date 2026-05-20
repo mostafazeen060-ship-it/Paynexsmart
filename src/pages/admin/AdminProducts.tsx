@@ -45,6 +45,7 @@ export default function AdminProducts() {
       }
     } catch (e) {
       toast.error('خطأ في جلب البيانات من السيرفر');
+      console.error(e);
     } finally {
       setLoading(false);
     }
@@ -52,7 +53,13 @@ export default function AdminProducts() {
 
   useEffect(() => { reload(); }, [reload]);
 
-  const filtered = products.filter(p => !search || p.nameAr.includes(search) || p.brand.toLowerCase().includes(search.toLowerCase()));
+  const filtered = products.filter(p => {
+    const q = search.trim();
+    if (!q) return true;
+    const name = (p.nameAr ?? '') as string;
+    const brand = (p.brand ?? '').toLowerCase();
+    return name.includes(q) || brand.includes(q.toLowerCase());
+  });
 
   async function handleSave() {
     if (!form.nameAr || !form.price) {
@@ -75,16 +82,22 @@ export default function AdminProducts() {
       }
       setShowForm(false);
       reload();
-    } catch {
+    } catch (err) {
       toast.error('فشل حفظ البيانات');
+      console.error(err);
     }
   }
 
   async function handleDelete(id: string) {
     if (!confirm('هل تريد حذف المنتج نهائياً من قاعدة البيانات الحية؟')) return;
-    await supabase.from('products').delete().eq('id', id);
-    toast.success('تم الحذف بنجاح');
-    reload();
+    try {
+      await supabase.from('products').delete().eq('id', id);
+      toast.success('تم الحذف بنجاح');
+      reload();
+    } catch (err) {
+      toast.error('فشل الحذف');
+      console.error(err);
+    }
   }
 
   return (
@@ -164,14 +177,14 @@ export default function AdminProducts() {
             <div key={p.id} className="bg-white rounded-xl border border-slate-100 overflow-hidden shadow-sm p-2.5 flex flex-col justify-between space-y-2">
               <div className="space-y-2">
                 <div className="aspect-square bg-slate-50 rounded-lg overflow-hidden relative">
-                  <img src={p.images[0]} className="w-full h-full object-cover" alt="" onError={e => { (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=400&h=400&fit=crop'; }} />
+                  <img src={p.images?.[0] ?? 'https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=400&h=400&fit=crop'} className="w-full h-full object-cover" alt="" onError={e => { (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=400&h=400&fit=crop'; }} />
                   <span className="absolute top-1.5 start-1.5 bg-emerald-500 text-white text-[8px] font-bold px-1.5 py-0.5 rounded-full shadow-sm">Live DB</span>
                 </div>
                 <div className="font-bold text-xs text-slate-700 truncate">{lang === 'ar' ? p.nameAr : p.nameEn}</div>
                 <div className="text-xs text-slate-400">{p.brand}</div>
                 <div className="flex items-center gap-1.5">
-                  <span className="text-xs font-black text-[#0f2460]">{formatCurrency(p.price, lang)}</span>
-                  {p.originalPrice && p.originalPrice > p.price && (
+                  <span className="text-xs font-black text-[#0f2460]">{formatCurrency(p.price ?? 0, lang)}</span>
+                  {p.originalPrice && p.originalPrice > (p.price ?? 0) && (
                     <span className="text-[10px] text-slate-400 line-through">{formatCurrency(p.originalPrice, lang)}</span>
                   )}
                 </div>
@@ -179,7 +192,7 @@ export default function AdminProducts() {
               <div className="flex gap-1.5 text-[11px] pt-1 border-t border-slate-50">
                 <button onClick={() => {
                   setEditing(p);
-                  setForm({ nameAr: p.nameAr, price: p.price, originalPrice: p.originalPrice || 0, imageUrl: p.images[0], categoryAr: p.categoryAr, brand: p.brand, stock: p.stock, isActive: p.isActive });
+                  setForm({ nameAr: p.nameAr ?? '', price: p.price ?? 0, originalPrice: p.originalPrice ?? 0, imageUrl: p.images?.[0] ?? '', categoryAr: p.categoryAr ?? '', brand: p.brand ?? '', stock: p.stock ?? 10, isActive: p.isActive ?? true });
                   setShowForm(true);
                 }} className="flex-1 py-1 bg-[#0f2460]/10 text-[#0f2460] font-medium rounded-md hover:bg-[#0f2460] hover:text-white transition-all flex items-center justify-center gap-1">
                   <Edit2 size={10} /> {t('تعديل', 'Edit')}
