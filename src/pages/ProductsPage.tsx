@@ -4,13 +4,12 @@ import { supabase } from '../supabaseClient';
 // تعريف شكل البيانات الخاص بالمنتج لـ TypeScript
 interface Product {
   id: string;
-  name: string;
-  price: number;
-  image?: string | null;       // إضافة null
-  description?: string | null; // إضافة null
-  category?: string | null;    // إضافة null
+  name?: string | null;
+  price?: number | null;
+  image_url?: string | null; // استخدمنا image_url كما في جدول supabase
+  description?: string | null;
+  category?: string | null;
 }
-
 
 export default function ProductsPage() {
   const [products, setProducts] = useState<Product[]>([]);
@@ -18,24 +17,21 @@ export default function ProductsPage() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-     const { data, error } = await supabase.from('products').select('*');
-console.log("البيانات القادمة من السيرفر:", data);
-
+    // دالة async داخل useEffect حتى نستخدم await بشكل صحيح
     async function fetchProducts() {
       try {
         setLoading(true);
-        // سحب البيانات من جدول products
+        // استخدمنا typing هنا لتقليل أخطاء TS
         const { data, error: supabaseError } = await supabase
-          .from('products')
-          .select('*')
-
+          .from<Product>('products')
+          .select('id, name, price, image_url');
 
         if (supabaseError) throw supabaseError;
 
-        setProducts(data || []);
+        setProducts(data ?? []);
       } catch (err: any) {
-        console.error("خطأ في جلب المنتجات:", err.message);
-        setError(err.message);
+        console.error("خطأ في جلب المنتجات:", err?.message ?? String(err));
+        setError(err?.message ?? String(err));
       } finally {
         setLoading(false);
       }
@@ -75,8 +71,9 @@ console.log("البيانات القادمة من السيرفر:", data);
         /* شبكة عرض المنتجات (Grid) المتوافقة مع الموبايل والكمبيوتر */
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {products.map((product) => {
-            // حساب القسط الشهري تلقائياً على 24 شهر بناءً على السعر الحقيقي
-            const monthlyInstallment = product.price ? Math.round(product.price / 24) : 0;
+            // احمِ السعر لأنّه قد يكون null/undefined
+            const price = product.price ?? 0;
+            const monthlyInstallment = price > 0 ? Math.round(price / 24) : 0;
 
             return (
               <div 
@@ -88,7 +85,7 @@ console.log("البيانات القادمة من السيرفر:", data);
                   {product.image_url ? (
                     <img 
                       src={product.image_url} 
-                      alt={product.name} 
+                      alt={product.name ?? "منتج"} 
                       className="max-h-full max-w-full object-contain mix-blend-multiply"
                     />
                   ) : (
@@ -100,16 +97,16 @@ console.log("البيانات القادمة من السيرفر:", data);
                 {/* 2. تفاصيل المنتج (الاسم والسعر) */}
                 <div className="text-right">
                   <h3 className="font-medium text-sm text-gray-800 mb-2 line-clamp-2 h-10 leading-tight">
-                    {product.name || "منتج بدون اسم"}
+                    {product.name ?? "منتج بدون اسم"}
                   </h3>
                   
                   <p className="text-lg font-bold text-gray-900 mb-2">
-                    {product.price ? `${product.price.toLocaleString()} ج.م` : "السعر غير متاح"}
+                    {price > 0 ? `${price.toLocaleString()} ج.م` : "السعر غير متاح"}
                   </p>
                 </div>
 
                 {/* 3. صندوق حساب الأقساط (نفس تصميم موقعك) */}
-                {product.price && (
+                {price > 0 && (
                   <div className="bg-orange-50 p-2 rounded-lg text-right mt-3 border border-orange-100">
                     <span className="text-[10px] text-orange-600 block mb-0.5">قسط شهري مرن:</span>
                     <span className="text-xs font-bold text-orange-700">
