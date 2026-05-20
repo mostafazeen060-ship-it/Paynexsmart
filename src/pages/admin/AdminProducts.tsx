@@ -15,6 +15,7 @@ import {
 import { formatCurrency } from '@/lib/utils';
 import type { Product } from '@/types';
 import { toast } from 'sonner';
+import { supabase } from '../supabaseClient';
 
 // ── Sync-status helpers ───────────────────────────────────────────────────────
 type SyncStatus = 'idle' | 'fetching' | 'importing' | 'done' | 'error';
@@ -57,10 +58,20 @@ export default function AdminProducts() {
   });
 
   // ── Load everything ──────────────────────────────────────────────────────
-  function reload() {
-    setProducts(getProducts());
-    setHistory(getScraperHistory());
+    async function reload() {
+    try {
+      const { data } = await supabase.from('products').select('*').order('created_at', { ascending: false });
+      if (data) {
+        const mapped = data.map((p: any) => ({
+          id: p.id, nameAr: p.name, nameEn: p.name, name: p.name,
+          price: Number(p.price), images: p.image_url ? [p.image_url] : [],
+          categoryAr: 'عام', brand: 'براند', source: 'manual', isActive: true, stock: 10
+        }));
+        setProducts(mapped);
+      }
+    } catch (e) { console.log(e); }
   }
+
 
   useEffect(() => {
     reload();
@@ -163,25 +174,7 @@ export default function AdminProducts() {
         throw new Error(t('الملف لا يحتوي على منتجات', 'File contains no products'));
       }
 
-      setSyncProgress(t(`جاري استيراد ${rawProducts.length} منتج...`, `Importing ${rawProducts.length} products...`));
-      await new Promise(r => setTimeout(r, 50)); // yield to UI
-
-      const result = importScrapedProducts(rawProducts, 'btech');
-      setLastResult(result);
-      reload();
-      setSyncStatus('done');
-
-      const msg = t(
-        `✅ مزامنة مكتملة: +${result.added} جديد، ${result.updated} محدَّث`,
-        `✅ Sync complete: +${result.added} new, ${result.updated} updated`,
-      );
-      if (silent) toast.success(msg);
-      else toast.success(msg);
-
-      setSyncProgress('');
-      setTimeout(() => setSyncStatus('idle'), 3000);
-
-    } catch (err) {
+            } catch (err) {
       setSyncStatus('error');
       const msg = err instanceof Error ? err.message : String(err);
       setSyncProgress(msg);
@@ -189,6 +182,18 @@ export default function AdminProducts() {
       setTimeout(() => { setSyncStatus('idle'); setSyncProgress(''); }, 5000);
     }
   }, [t]);
+
+  async function handleSave() {
+    if (!form.nameAr || !form.price) return;
+    if (editing) {
+      await supabase.from('products').update({ name: form.nameAr, price: form.price, image_url: form.imageUrl }).eq('id', editing.id);
+    } else {
+      await supabase.from('products').insert([{ name: form.nameAr, price: form.price, image_url: form.imageUrl }]);
+    }
+    reload();
+    setShowForm(false);
+  }
+
 
   // ── File import ──────────────────────────────────────────────────────────
   async function handleFileImport(e: React.ChangeEvent<HTMLInputElement>) {
