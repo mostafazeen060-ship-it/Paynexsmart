@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ArrowRight, ShoppingBag, CheckCircle } from 'lucide-react';
+import { ArrowRight, Shield, Clock, CheckCircle, ChevronLeft, ChevronRight } from 'lucide-react';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import InstallmentCalculator from '@/components/features/InstallmentCalculator';
@@ -8,12 +8,15 @@ import { useApp } from '@/contexts/AppContext';
 import { getProducts } from '@/lib/storage';
 import { formatCurrency } from '@/lib/utils';
 import type { Product } from '@/types';
+import type { InstallmentPlan } from '@/lib/installment';
 
 export default function ProductDetailPage() {
   const { id } = useParams();
   const { t, lang } = useApp();
   const navigate = useNavigate();
   const [product, setProduct] = useState<Product | null>(null);
+  const [imgIndex, setImgIndex] = useState(0);
+  const [selectedPlan, setSelectedPlan] = useState<ReturnType<typeof import('@/lib/installment').calculateInstallment> | null>(null);
 
   useEffect(() => {
     const found = getProducts().find(p => p.id === id);
@@ -30,45 +33,135 @@ export default function ProductDetailPage() {
     <div className="min-h-screen bg-slate-50">
       <Navbar />
 
-      <div className="container mx-auto py-10 px-4">
-        <button 
-          onClick={() => navigate(-1)} 
-          className="flex items-center gap-2 text-slate-500 mb-6 hover:text-[#0f2460] transition-colors"
-        >
-          <ArrowRight size={20} /> {t('عودة', 'Back')}
-        </button>
-
-        <div className="grid md:grid-cols-2 gap-10 bg-white p-8 rounded-3xl shadow-sm border border-slate-100">
-          {/* صورة المنتج */}
-          <div className="flex items-center justify-center bg-gray-50 rounded-2xl p-6">
-            <img src={product.image_url} alt={name} className="max-h-96 object-contain" />
-          </div>
-
-          {/* تفاصيل المنتج */}
-          <div className="flex flex-col">
-            <h1 className="text-3xl font-black text-[#0f2460] mb-4">{name}</h1>
-            <p className="text-2xl font-bold text-[#d4a339] mb-6">{formatCurrency(product.price, lang)}</p>
-            <p className="text-slate-600 mb-8 leading-relaxed">{desc}</p>
-
-            {/* أزرار الإجراء */}
-            <div className="flex gap-4 mt-auto">
-              <button
-                onClick={() => navigate(`/order-form/${product.id}`)}
-                className="flex-1 bg-[#0f2460] text-white py-4 rounded-xl font-black flex items-center justify-center gap-2 hover:bg-[#1a3a8a] transition-all"
-              >
-                <ShoppingBag size={20} />
-                {t('اطلب بالتقسيط الآن', 'Order via Installment')}
-              </button>
-            </div>
-          </div>
-        </div>
-
-        {/* حاسبة القسط */}
-        <div className="mt-12 max-w-2xl mx-auto">
-          <h2 className="text-2xl font-black text-[#0f2460] mb-6 text-center">{t('احسب قسطك', 'Calculate Your Installment')}</h2>
-          <InstallmentCalculator productPrice={product.price} />
+      {/* Breadcrumb */}
+      <div className="bg-white border-b border-slate-100 py-3 px-4">
+        <div className="max-w-7xl mx-auto flex items-center gap-2 text-sm text-slate-500">
+          <button onClick={() => navigate('/')} className="hover:text-[#0f2460]">{t('الرئيسية', 'Home')}</button>
+          <ChevronLeft size={14} className="rtl-flip" />
+          <button onClick={() => navigate('/products')} className="hover:text-[#0f2460]">{t('المنتجات', 'Products')}</button>
+          <ChevronLeft size={14} className="rtl-flip" />
+          <span className="text-[#0f2460] font-medium truncate max-w-[200px]">{name}</span>
         </div>
       </div>
+
+      <div className="max-w-7xl mx-auto px-4 py-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 mb-10">
+          {/* Image Gallery */}
+          <div>
+            <div className="relative bg-white rounded-2xl shadow-card overflow-hidden aspect-square mb-4">
+              <img
+                src={product.images[imgIndex]}
+                alt={name}
+                className="w-full h-full object-cover"
+              />
+              {product.images.length > 1 && (
+                <>
+                  <button
+                    onClick={() => setImgIndex(i => (i - 1 + product.images.length) % product.images.length)}
+                    className="absolute start-3 top-1/2 -translate-y-1/2 w-10 h-10 bg-white rounded-full shadow flex items-center justify-center"
+                  >
+                    <ChevronRight size={18} />
+                  </button>
+                  <button
+                    onClick={() => setImgIndex(i => (i + 1) % product.images.length)}
+                    className="absolute end-3 top-1/2 -translate-y-1/2 w-10 h-10 bg-white rounded-full shadow flex items-center justify-center"
+                  >
+                    <ChevronLeft size={18} />
+                  </button>
+                </>
+              )}
+            </div>
+            <div className="flex gap-2">
+              {product.images.map((img, i) => (
+                <button
+                  key={i}
+                  onClick={() => setImgIndex(i)}
+                  className={`w-16 h-16 rounded-xl overflow-hidden border-2 transition-all ${i === imgIndex ? 'border-[#0f2460]' : 'border-transparent'}`}
+                >
+                  <img src={img} alt="" className="w-full h-full object-cover" />
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Product Info */}
+          <div>
+            <div className="badge-navy mb-3 inline-block">{lang === 'ar' ? product.categoryAr : product.category}</div>
+            <h1 className="text-2xl md:text-3xl font-black text-[#0f2460] mb-3">{name}</h1>
+            <p className="text-slate-600 text-sm leading-relaxed mb-6">{desc}</p>
+
+            {/* Price */}
+            <div className="bg-white rounded-2xl p-5 border border-slate-100 shadow-card mb-6">
+              <div className="flex items-end gap-3 mb-2">
+                <div className="text-3xl font-black text-[#0f2460]">{formatCurrency(product.price, lang)}</div>
+                {product.originalPrice && (
+                  <div className="text-slate-400 line-through text-lg">{formatCurrency(product.originalPrice, lang)}</div>
+                )}
+              </div>
+              {selectedPlan && (
+                <div className="bg-[#0f2460]/5 rounded-xl p-3 text-sm text-[#0f2460]">
+                  <strong>{t('الخطة المختارة:', 'Selected Plan:')}</strong>{' '}
+                  {selectedPlan.months} {t('شهر', 'months')} ×{' '}
+                  {formatCurrency(selectedPlan.monthlyPayment, lang)}/{t('شهر', 'mo')}
+                </div>
+              )}
+            </div>
+
+            {/* Order Button */}
+            <button
+              onClick={() => navigate(`/order/${product.id}${selectedPlan ? `?months=${selectedPlan.months}&down=${selectedPlan.downPayment}` : ''}`)}
+              className="btn-gold w-full text-base mb-4 flex items-center justify-center gap-2"
+            >
+              {t('اطلب بالتقسيط الآن', 'Order in Installments Now')}
+              <ArrowRight size={18} className="rtl-flip" />
+            </button>
+
+            {/* Trust Badges */}
+            <div className="grid grid-cols-3 gap-3 mb-6">
+              {[
+                { icon: <Shield size={18} />, label: t('بيانات آمنة', 'Secure') },
+                { icon: <Clock size={18} />, label: t('موافقة سريعة', 'Fast Approval') },
+                { icon: <CheckCircle size={18} />, label: t('ضمان الجودة', 'Quality') },
+              ].map((b, i) => (
+                <div key={i} className="flex flex-col items-center gap-1 p-3 bg-white rounded-xl border border-slate-100 text-center">
+                  <span className="text-[#d4a339]">{b.icon}</span>
+                  <span className="text-xs text-slate-600 font-medium">{b.label}</span>
+                </div>
+              ))}
+            </div>
+
+            {/* Specs */}
+            {product.specs && Object.keys(product.specs).length > 0 && (
+              <div className="bg-white rounded-2xl border border-slate-100 overflow-hidden">
+                <div className="bg-[#0f2460] px-4 py-3">
+                  <h3 className="font-semibold text-white text-sm">{t('المواصفات', 'Specifications')}</h3>
+                </div>
+                <div className="divide-y divide-slate-50">
+                  {Object.entries(product.specs).map(([key, val]) => (
+                    <div key={key} className="flex px-4 py-2.5 text-sm">
+                      <span className="text-slate-500 w-1/2">{key}</span>
+                      <span className="font-medium text-slate-800 w-1/2">{val}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Calculator */}
+        <div className="max-w-2xl mx-auto">
+          <h2 className="section-title mb-6 text-center">{t('احسب قسطك', 'Calculate Your Installment')}</h2>
+          <InstallmentCalculator
+            productPrice={product.price}
+            onPlanSelected={(plan) => {
+              setSelectedPlan(plan);
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }}
+          />
+        </div>
+      </div>
+
       <Footer />
     </div>
   );
