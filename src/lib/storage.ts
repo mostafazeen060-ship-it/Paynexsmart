@@ -1,6 +1,6 @@
 import type { SiteSettings, Order, Product, Supervisor, AttendanceRecord, Notification } from '@/types';
 import { DEFAULT_SETTINGS, MOCK_PRODUCTS, MOCK_ORDERS, MOCK_SUPERVISORS } from '@/constants/data';
-import { generateId, addDays } from './utils';
+import { generateId } from './utils';
 
 const KEY = {
   settings:    'paynix_settings',
@@ -9,18 +9,18 @@ const KEY = {
   supervisors: 'paynix_supervisors',
 };
 
-// ===== SITE SETTINGS =====
+// ===== SITE SETTINGS (معدلة للحماية من خطأ banners) =====
 export function getSiteSettings(): SiteSettings {
   const stored = localStorage.getItem(KEY.settings);
   if (!stored) return DEFAULT_SETTINGS;
   
   try { 
     const parsed = JSON.parse(stored);
-    // دمج الإعدادات مع ضمان وجود مصفوفة banners دائماً
     return { 
       ...DEFAULT_SETTINGS, 
       ...parsed,
-      banners: (Array.isArray(parsed.banners)) ? parsed.banners : DEFAULT_SETTINGS.banners || [] 
+      // نضمن دائماً إرجاع مصفوفة حتى لو كانت فارغة لتجنب الانهيار
+      banners: Array.isArray(parsed.banners) ? parsed.banners : DEFAULT_SETTINGS.banners || [] 
     }; 
   }
   catch { return DEFAULT_SETTINGS; }
