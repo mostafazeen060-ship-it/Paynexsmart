@@ -95,7 +95,7 @@ export function addNotification(notif: Omit<Notification, 'id' | 'createdAt' | '
   localStorage.setItem(`paynix_notifications_${notif.userId}`, JSON.stringify([newNotif, ...notifications]));
 }
 
-// الدالة التي كان يفتقدها الـ Build
+// الدالة المطلوبة للـ Build
 export function markNotificationsRead(userId: string): void {
   const notifications = getNotifications(userId);
   const updated = notifications.map(n => ({ ...n, isRead: true }));
