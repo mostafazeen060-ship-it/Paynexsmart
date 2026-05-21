@@ -20,8 +20,8 @@ export function logAudit(supervisorId: string, action: string, details: string) 
     createdAt: new Date().toISOString(),
   };
   
-  logs.unshift(newLog); // إضافة السجل الجديد في البداية
-  localStorage.setItem('qastly_audit_logs', JSON.stringify(logs.slice(0, 500))); // الاحتفاظ بآخر 500 سجل
+  logs.unshift(newLog);
+  localStorage.setItem('qastly_audit_logs', JSON.stringify(logs.slice(0, 500)));
 }
 
 export function getAuditLogs(): AuditEntry[] {
@@ -30,6 +30,11 @@ export function getAuditLogs(): AuditEntry[] {
   } catch {
     return [];
   }
+}
+
+// دالة تسجيل دخول المشرفين (المطلوبة في auth.ts)
+export function logLogin(supervisorId: string) {
+  logAudit(supervisorId, 'LOGIN', 'تم تسجيل دخول المشرف إلى النظام');
 }
 
 // دالة مخصصة لتسجيل تغيير حالة الطلبات
