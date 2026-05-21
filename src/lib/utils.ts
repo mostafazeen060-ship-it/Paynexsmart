@@ -1,12 +1,22 @@
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 
-// دمج كلاسات Tailwind
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-// تنسيق العملة
+// دالة توليد معرف فريد (تم إضافتها لإصلاح خطأ البناء)
+export function generateId() {
+  return Math.random().toString(36).substring(2, 11);
+}
+
+// دالة إضافة أيام (تم إضافتها لإصلاح خطأ البناء)
+export function addDays(date: Date, days: number): Date {
+  const result = new Date(date);
+  result.setDate(result.getDate() + days);
+  return result;
+}
+
 export function formatCurrency(amount: number, lang: 'ar' | 'en' = 'ar') {
   return new Intl.NumberFormat(lang === 'ar' ? 'ar-EG' : 'en-US', {
     style: 'currency',
@@ -14,18 +24,19 @@ export function formatCurrency(amount: number, lang: 'ar' | 'en' = 'ar') {
   }).format(amount);
 }
 
-// دالة حساب القسط الذكي (المعادلة الأساسية)
-export function calculateInstallment(totalAmount: number, months: number, interestRate: number = 0) {
-  // interestRate: نسبة الفائدة السنوية (مثال: 0.15 لـ 15%)
-  const monthlyInterest = interestRate / 12;
-  const monthlyPayment = (totalAmount * monthlyInterest * Math.pow(1 + monthlyInterest, months)) / 
-                         (Math.pow(1 + monthlyInterest, months) - 1);
-  
-  // إذا كانت الفائدة 0، نقسم المبلغ على عدد الشهور مباشرة
-  return interestRate === 0 ? Math.round(totalAmount / months) : Math.round(monthlyPayment);
+export function formatDate(dateStr: string, lang: 'ar' | 'en' = 'ar') {
+  return new Date(dateStr).toLocaleDateString(lang === 'ar' ? 'ar-EG' : 'en-US');
 }
 
-// تسميات حالات الطلب
+export function formatTime(dateStr: string, lang: 'ar' | 'en' = 'ar') {
+  return new Date(dateStr).toLocaleTimeString(lang === 'ar' ? 'ar-EG' : 'en-US', { hour: '2-digit', minute: '2-digit' });
+}
+
+export function hoursSince(dateStr: string) {
+  const diff = new Date().getTime() - new Date(dateStr).getTime();
+  return Math.floor(diff / (1000 * 60 * 60));
+}
+
 export function getOrderStatusLabel(status: string, t: any) {
   const labels: Record<string, string> = {
     'pending': 'قيد الانتظار',
@@ -37,7 +48,6 @@ export function getOrderStatusLabel(status: string, t: any) {
   return labels[status] || status;
 }
 
-// ألوان حالات الطلب
 export function getOrderStatusColor(status: string) {
   const colors: Record<string, string> = {
     'pending': 'bg-slate-100 text-slate-700',
