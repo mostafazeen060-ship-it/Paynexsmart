@@ -9,16 +9,18 @@ const KEY = {
   supervisors: 'paynix_supervisors',
 };
 
-// ===== SITE SETTINGS (معدلة لحل مشكلة الـ banners) =====
+// ===== SITE SETTINGS =====
 export function getSiteSettings(): SiteSettings {
   const stored = localStorage.getItem(KEY.settings);
   if (!stored) return DEFAULT_SETTINGS;
+  
   try { 
     const parsed = JSON.parse(stored);
+    // دمج الإعدادات مع ضمان وجود مصفوفة banners دائماً
     return { 
       ...DEFAULT_SETTINGS, 
       ...parsed,
-      banners: parsed.banners || DEFAULT_SETTINGS.banners || [] 
+      banners: (Array.isArray(parsed.banners)) ? parsed.banners : DEFAULT_SETTINGS.banners || [] 
     }; 
   }
   catch { return DEFAULT_SETTINGS; }
