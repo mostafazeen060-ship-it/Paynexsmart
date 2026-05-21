@@ -1,52 +1,45 @@
-import React, { createContext, useContext, useState, useCallback } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react';
 import type { User } from '@/types';
 import { getCurrentUser, setCurrentUser, clearCurrentUser } from '@/lib/auth';
 
 interface AuthContextValue {
   user: User | null;
-  setUser: (u: User | null) => void;
-  logout: () => void;
-  isAdmin: boolean;
-  isSupervisor: boolean;
-  isCustomer: boolean;
-  isLoggedIn: boolean;
+  loginUser: (user: User) => void;
+  logoutUser: () => void;
+  isLoading: boolean;
 }
 
-const AuthContext = createContext<AuthContextValue | null>(null);
+const AuthContext = createContext<AuthContextValue | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [user, setUserState] = useState<User | null>(getCurrentUser);
+  const [user, setUser] = useState<User | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const setUser = useCallback((u: User | null) => {
-    setUserState(u);
-    if (u) setCurrentUser(u);
-    else clearCurrentUser();
+  useEffect(() => {
+    const currentUser = getCurrentUser();
+    if (currentUser) setUser(currentUser);
+    setIsLoading(false);
   }, []);
 
-  const logout = useCallback(() => {
-    setUserState(null);
+  const loginUser = (user: User) => {
+    setCurrentUser(user);
+    setUser(user);
+  };
+
+  const logoutUser = () => {
     clearCurrentUser();
-  }, []);
+    setUser(null);
+  };
 
   return (
-    <AuthContext.Provider
-      value={{
-        user,
-        setUser,
-        logout,
-        isAdmin: user?.role === 'admin',
-        isSupervisor: user?.role === 'supervisor',
-        isCustomer: user?.role === 'customer',
-        isLoggedIn: !!user,
-      }}
-    >
-      {children}
+    <AuthContext.Provider value={{ user, loginUser, logoutUser, isLoading }}>
+      {!isLoading && children}
     </AuthContext.Provider>
   );
 }
 
 export function useAuth() {
-  const ctx = useContext(AuthContext);
-  if (!ctx) throw new Error('useAuth must be used within AuthProvider');
-  return ctx;
+  const context = useContext(AuthContext);
+  if (!context) throw new Error('useAuth must be used within an AuthProvider');
+  return context;
 }
