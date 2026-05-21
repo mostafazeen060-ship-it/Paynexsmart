@@ -1,85 +1,51 @@
 /**
- * Audit Log System — Qastly
- *
- * Append-only log stored in localStorage.
- * Records every significant action (login, status change, setting update, etc.)
- * Cannot be deleted by supervisors — only readable by admin.
+ * Audit Log System - Tracks administrative actions for accountability.
  */
 
-import type { AuditLog, UserRole } from '@/types';
-import { generateId } from './utils';
+export interface AuditEntry {
+  id: string;
+  supervisorId: string;
+  action: string;
+  details: string;
+  createdAt: string;
+}
 
-const AUDIT_KEY = 'paynix_audit_log';
-const MAX_ENTRIES = 1000; // Keep last 1000 entries
+export function logAudit(supervisorId: string, action: string, details: string) {
+  const logs = getAuditLogs();
+  const newLog: AuditEntry = {
+    id: Math.random().toString(36).substring(2, 11),
+    supervisorId,
+    action,
+    details,
+    createdAt: new Date().toISOString(),
+  };
+  
+  logs.unshift(newLog); // إضافة السجل الجديد في البداية
+  localStorage.setItem('qastly_audit_logs', JSON.stringify(logs.slice(0, 500))); // الاحتفاظ بآخر 500 سجل
+}
 
-export function getAuditLogs(): AuditLog[] {
+export function getAuditLogs(): AuditEntry[] {
   try {
-    return JSON.parse(localStorage.getItem(AUDIT_KEY) ?? '[]') as AuditLog[];
+    return JSON.parse(localStorage.getItem('qastly_audit_logs') || '[]');
   } catch {
     return [];
   }
 }
 
-export function addAuditLog(entry: Omit<AuditLog, 'id' | 'timestamp'>): void {
-  const logs = getAuditLogs();
-  const newEntry: AuditLog = {
-    ...entry,
-    id: generateId(),
-    timestamp: new Date().toISOString(),
-  };
-  // Prepend and cap at MAX_ENTRIES
-  const updated = [newEntry, ...logs].slice(0, MAX_ENTRIES);
-  localStorage.setItem(AUDIT_KEY, JSON.stringify(updated));
+// دالة مخصصة لتسجيل تغيير حالة الطلبات
+export function logOrderStatusChange(supervisorId: string, orderId: string, oldStatus: string, newStatus: string) {
+  logAudit(
+    supervisorId, 
+    'ORDER_STATUS_CHANGE', 
+    `تغيير حالة الطلب ${orderId} من ${oldStatus} إلى ${newStatus}`
+  );
 }
 
-/** Helper: log an order status change */
-export function logOrderStatusChange(
-  userId: string, userName: string, userRole: UserRole,
-  orderId: string, fromStatus: string, toStatus: string, reason?: string
-): void {
-  addAuditLog({
-    userId, userName, userRole,
-    action: `تغيير حالة الطلب: ${fromStatus} → ${toStatus}${reason ? ' | السبب: ' + reason : ''}`,
-    entity: 'order',
-    entityId: orderId,
-    before: JSON.stringify({ status: fromStatus }),
-    after: JSON.stringify({ status: toStatus, reason }),
-  });
-}
-
-/** Helper: log a setting change */
-export function logSettingsChange(
-  userId: string, userName: string, field: string, oldVal: unknown, newVal: unknown
-): void {
-  addAuditLog({
-    userId, userName, userRole: 'admin',
-    action: `تعديل إعداد: ${field}`,
-    entity: 'settings',
-    before: JSON.stringify({ [field]: oldVal }),
-    after: JSON.stringify({ [field]: newVal }),
-  });
-}
-
-/** Helper: log wallet settlement */
-export function logWalletSettlement(
-  adminId: string, adminName: string,
-  supervisorId: string, supervisorName: string, amount: number
-): void {
-  addAuditLog({
-    userId: adminId, userName: adminName, userRole: 'admin',
-    action: `تصفير عهدة المشرف: ${supervisorName} | المبلغ: ${amount} ج.م`,
-    entity: 'wallet',
-    entityId: supervisorId,
-    after: JSON.stringify({ settled: amount, at: new Date().toISOString() }),
-  });
-}
-
-/** Helper: log login event */
-export function logLogin(userId: string, userName: string, userRole: UserRole, success: boolean): void {
-  addAuditLog({
-    userId, userName, userRole,
-    action: success ? 'تسجيل دخول ناجح' : 'محاولة دخول فاشلة',
-    entity: 'auth',
-    entityId: userId,
-  });
+// دالة مخصصة لتسجيل العمليات المالية
+export function logWalletSettlement(supervisorId: string, amount: number) {
+  logAudit(
+    supervisorId, 
+    'WALLET_SETTLEMENT', 
+    `تسوية عهدة مالية بمبلغ ${amount} ج.م`
+  );
 }
