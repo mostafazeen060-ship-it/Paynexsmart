@@ -35,6 +35,10 @@ export function login(username: string, password: string): User | null {
   return null;
 }
 
+export function logout(): void {
+  clearCurrentUser();
+}
+
 export function isAuthenticated(): boolean {
   return !!getCurrentUser();
 }
