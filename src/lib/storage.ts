@@ -19,7 +19,6 @@ export function getSiteSettings(): SiteSettings {
     return { 
       ...DEFAULT_SETTINGS, 
       ...parsed,
-      // تأمين مصفوفة banners لضمان عدم انهيار الموقع إذا كانت مفقودة
       banners: Array.isArray(parsed.banners) ? parsed.banners : DEFAULT_SETTINGS.banners || [] 
     }; 
   }
@@ -94,6 +93,13 @@ export function addNotification(notif: Omit<Notification, 'id' | 'createdAt' | '
     createdAt: new Date().toISOString() 
   };
   localStorage.setItem(`paynix_notifications_${notif.userId}`, JSON.stringify([newNotif, ...notifications]));
+}
+
+// الدالة التي كان يفتقدها الـ Build
+export function markNotificationsRead(userId: string): void {
+  const notifications = getNotifications(userId);
+  const updated = notifications.map(n => ({ ...n, isRead: true }));
+  localStorage.setItem(`paynix_notifications_${userId}`, JSON.stringify(updated));
 }
 
 // ===== SCRAPER HISTORY =====
