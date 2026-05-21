@@ -1,14 +1,21 @@
-import { SiteSettings, Order, Product, Supervisor, AttendanceRecord } from '@/types';
+import { SiteSettings, Order, Product, Supervisor } from '@/types';
 import { DEFAULT_SETTINGS, MOCK_PRODUCTS, MOCK_ORDERS, MOCK_SUPERVISORS } from '@/constants/data';
 import { generateId } from './utils';
-import { addNotification } from './notifications'; // تأكد من وجود هذا الاستيراد
 
 const KEY = {
   settings:    'paynix_settings',
   products:    'paynix_products',
   orders:      'paynix_orders',
   supervisors: 'paynix_supervisors',
+  notifications: 'qastly_notifications'
 };
+
+// دالة محلية لإضافة التنبيهات بدلاً من استيرادها
+export function addNotification(notification: any) {
+  const current = JSON.parse(localStorage.getItem(KEY.notifications) || '[]');
+  const newNotification = { ...notification, id: generateId(), createdAt: new Date().toISOString() };
+  localStorage.setItem(KEY.notifications, JSON.stringify([newNotification, ...current]));
+}
 
 // ===== SITE SETTINGS =====
 export function getSiteSettings(): SiteSettings {
@@ -30,18 +37,6 @@ export function getProducts(): Product[] {
 export function saveProducts(products: Product[]): void {
   localStorage.setItem(KEY.products, JSON.stringify(products));
 }
-export function addProduct(product: Omit<Product, 'id' | 'createdAt'>): Product {
-  const products = getProducts();
-  const newProduct: Product = { ...product, id: generateId(), createdAt: new Date().toISOString() };
-  saveProducts([...products, newProduct]);
-  return newProduct;
-}
-export function updateProduct(id: string, updates: Partial<Product>): void {
-  saveProducts(getProducts().map(p => p.id === id ? { ...p, ...updates } : p));
-}
-export function deleteProduct(id: string): void {
-  saveProducts(getProducts().filter(p => p.id !== id));
-}
 
 // ===== ORDERS =====
 export function getOrders(): Order[] {
@@ -50,7 +45,6 @@ export function getOrders(): Order[] {
   try { return JSON.parse(stored) as Order[]; } catch { return MOCK_ORDERS; }
 }
 
-// هذه هي الدالة التي كانت مفقودة وتسبب انهيار البناء:
 export function getOrderById(id: string): Order | undefined {
   return getOrders().find(o => o.id === id);
 }
@@ -58,12 +52,7 @@ export function getOrderById(id: string): Order | undefined {
 export function saveOrders(orders: Order[]): void {
   localStorage.setItem(KEY.orders, JSON.stringify(orders));
 }
-export function getOrdersByCustomer(customerId: string): Order[] {
-  return getOrders().filter(o => o.customerId === customerId);
-}
-export function getOrdersBySupervisor(supervisorId: string): Order[] {
-  return getOrders().filter(o => o.supervisorId === supervisorId);
-}
+
 export function addOrder(order: Omit<Order, 'id' | 'createdAt' | 'updatedAt'>): Order {
   const orders = getOrders();
   const newOrder: Order = {
@@ -73,22 +62,15 @@ export function addOrder(order: Omit<Order, 'id' | 'createdAt' | 'updatedAt'>): 
     updatedAt: new Date().toISOString(),
   };
   saveOrders([...orders, newOrder]);
+  
+  // استخدام الدالة المحلية
   addNotification({
     userId: 'admin-001', type: 'new-order',
-    titleAr: 'طلب جديد', titleEn: 'New Order',
     messageAr: `طلب جديد من ${newOrder.customerName}`,
     messageEn: `New order from ${newOrder.customerName}`,
     orderId: newOrder.id,
   });
-  if (newOrder.supervisorId) {
-    addNotification({
-      userId: newOrder.supervisorId, type: 'new-order',
-      titleAr: 'طلب جديد في محافظتك', titleEn: 'New order in your province',
-      messageAr: `طلب جديد من ${newOrder.customerName}`,
-      messageEn: `New order from ${newOrder.customerName}`,
-      orderId: newOrder.id,
-    });
-  }
+  
   return newOrder;
 }
 
