@@ -1,35 +1,61 @@
-import { createContext, useContext, useState, ReactNode } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import type { SiteSettings } from '@/types';
+import { getSiteSettings, saveSiteSettings } from '@/lib/storage';
 
-interface AppContextType {
-  lang: 'ar' | 'en';
-  toggleLang: () => void;
+type Lang = 'ar' | 'en';
+
+interface AppContextValue {
+  lang: Lang;
+  setLang: (l: Lang) => void;
+  dir: 'rtl' | 'ltr';
   t: (ar: string, en: string) => string;
+  settings: SiteSettings;
+  updateSettings: (s: Partial<SiteSettings>) => void;
+  isRTL: boolean;
 }
 
-const AppContext = createContext<AppContextType | undefined>(undefined);
+const AppContext = createContext<AppContextValue | null>(null);
 
-export function AppProvider({ children }: { children: ReactNode }) {
-  const [lang, setLang] = useState<'ar' | 'en'>('ar');
+export function AppProvider({ children }: { children: React.ReactNode }) {
+  const [lang, setLangState] = useState<Lang>(() => {
+    return (localStorage.getItem('qastly_lang') as Lang) ?? 'ar';
+  });
+  const [settings, setSettings] = useState<SiteSettings>(getSiteSettings);
 
-  const toggleLang = () => {
-    setLang(prev => (prev === 'ar' ? 'en' : 'ar'));
-  };
+  const dir = lang === 'ar' ? 'rtl' : 'ltr';
+  const isRTL = lang === 'ar';
 
-  const t = (ar: string, en: string) => {
-    return lang === 'ar' ? ar : en;
-  };
+  const setLang = useCallback((l: Lang) => {
+    setLangState(l);
+    localStorage.setItem('qastly_lang', l);
+    document.documentElement.lang = l;
+    document.documentElement.dir = l === 'ar' ? 'rtl' : 'ltr';
+  }, []);
+
+  const t = useCallback((ar: string, en: string) => (lang === 'ar' ? ar : en), [lang]);
+
+  const updateSettings = useCallback((updates: Partial<SiteSettings>) => {
+    setSettings(prev => {
+      const newSettings = { ...prev, ...updates };
+      saveSiteSettings(newSettings);
+      return newSettings;
+    });
+  }, []);
+
+  useEffect(() => {
+    document.documentElement.lang = lang;
+    document.documentElement.dir = dir;
+  }, [lang, dir]);
 
   return (
-    <AppContext.Provider value={{ lang, toggleLang, t }}>
+    <AppContext.Provider value={{ lang, setLang, dir, t, settings, updateSettings, isRTL }}>
       {children}
     </AppContext.Provider>
   );
 }
 
 export function useApp() {
-  const context = useContext(AppContext);
-  if (!context) {
-    throw new Error('useApp must be used within an AppProvider');
-  }
-  return context;
+  const ctx = useContext(AppContext);
+  if (!ctx) throw new Error('useApp must be used within AppProvider');
+  return ctx;
 }
